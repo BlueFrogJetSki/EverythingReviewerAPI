@@ -1,0 +1,6 @@
+@EventFinderAPI_HostAddress = http://localhost:5163
+
+GET {{EventFinderAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

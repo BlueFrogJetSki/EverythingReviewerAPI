@@ -1,0 +1,51 @@
+## Build output
+bin/
+obj/
+out/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## ASP.NET Core secrets
+secrets.json
+
+## OS generated files
+.DS_Store
+Thumbs.db
+
+## Rider and VS Code
+.idea/
+.vscode/
+.vs/
+
+## NuGet
+*.nupkg
+.nuget/
+
+## Logs
+*.log
+
+## Publish output
+publish/
+wwwroot/dist/
+wwwroot/node_modules/
+
+## Configuration files
+appsettings.Development.json
+appsettings.Local.json
+
+## Node modules (if using frontend tools)
+node_modules/
+
+## Environment files
+.env
+.env.*
+
+## Entity Framework Migrations snapshot
+**/*Snapshot.cs
+
+##appsetting
+appsettings.json
