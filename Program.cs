@@ -49,14 +49,21 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod()      // Allow all methods (GET, POST, etc.)
                           .AllowAnyHeader());    // Allow all headers
 
-    options.AddPolicy("AllowFrontend", builder =>
+    options.AddPolicy("AllowFrontend-Dev", builder =>
     {
         builder.WithOrigins("http://localhost:3000") // your frontend origin
                .AllowCredentials()
                .AllowAnyHeader()
                .AllowAnyMethod();
     });
-});
+    options.AddPolicy("AllowFrontend-Prod", builder =>
+    {
+        builder.WithOrigins("https://reviews4everything.com")
+                .AllowCredentials()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+}); 
 
 builder.Services.AddSingleton<IAmazonS3>(sp =>
 {
@@ -64,7 +71,7 @@ builder.Services.AddSingleton<IAmazonS3>(sp =>
     var secretKey = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
     Trace.Listeners.Add(new ConsoleTraceListener());
     Trace.Assert(!(string.IsNullOrEmpty(accessKey) || string.IsNullOrEmpty(secretKey)), "AWS credentials are not set in environment variables.");
-    
+
 
     var credentials = new BasicAWSCredentials(accessKey, secretKey);
     var config = new AmazonS3Config
@@ -101,15 +108,20 @@ builder.Services.AddAuthorization(options =>
 
 
 var app = builder.Build();
-app.UseCors("AllowAll");
-app.UseAuthentication();
-app.UseAuthorization();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseCors("AllowFrontend-Dev");
     app.MapOpenApi();
 }
+else
+{
+    app.UseCors("AllowFrontend-Prod");
+}
+
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseHttpsRedirection();
 

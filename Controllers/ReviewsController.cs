@@ -6,10 +6,12 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using reviews4everything.DTOs;
 using reviews4everything.Data;
+using Microsoft.AspNetCore.Cors;
 
 
 namespace reviews4everything.Controllers
 {
+   
     [Route("api/[controller]")]
     [ApiController]
     public class ReviewsController : ControllerBase
