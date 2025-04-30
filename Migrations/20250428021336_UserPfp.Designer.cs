@@ -12,8 +12,8 @@ using reviews4everything.Data;
 namespace reviews4everything.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250422001714_RatingCountandRatingSum")]
-    partial class RatingCountandRatingSum
+    [Migration("20250428021336_UserPfp")]
+    partial class UserPfp
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,6 +59,9 @@ namespace reviews4everything.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PfpUrl")
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")

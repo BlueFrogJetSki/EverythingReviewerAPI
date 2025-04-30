@@ -1,8 +1,8 @@
-﻿using EventFinderAPI.Models;
+﻿using reviews4everything.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace EventFinderAPI.Data
+namespace reviews4everything.Data
 {
     public class AppDbContext : IdentityDbContext<AppUser>
     {
@@ -25,6 +25,11 @@ namespace EventFinderAPI.Data
             modelBuilder.Entity<AppUser>()
                .HasIndex(u => u.Email)
                .IsUnique(); // 👈 enforce uniqueness
+
+            modelBuilder.Entity<AppUser>()
+              .HasIndex(u => u.NormalizedUserName)
+              .IsUnique(); // 👈 enforce uniqueness
+
 
             modelBuilder.Entity<Item>()
                 .HasOne(p => p.CreatedBy) // Assuming a navigation property exists in Post class

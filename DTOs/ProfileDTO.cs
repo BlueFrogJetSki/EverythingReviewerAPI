@@ -1,6 +1,6 @@
-﻿using EventFinderAPI.Models;
+﻿using reviews4everything.Models;
 
-namespace EventFinderAPI.DTOs
+namespace reviews4everything.DTOs
 {
     public class ProfileDTO
     {
@@ -15,7 +15,7 @@ namespace EventFinderAPI.DTOs
 
         public ProfileDTO(AppUser user)
         {
-            PfpUrl = user.pfpUrl;
+            PfpUrl = user.PfpUrl;
             Username = user.UserName;
             Reviews = user.ReviewsAdded?
                 .Select(r => new ReviewDTO(r))

@@ -1,13 +1,14 @@
-﻿using EventFinderAPI.Data;
-using EventFinderAPI.DTOs;
-using EventFinderAPI.Models;
+﻿
+using reviews4everything.DTOs;
+using reviews4everything.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using reviews4everything.Data;
 
-namespace EventFinderAPI.Controllers
+namespace reviews4everything.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -27,7 +28,10 @@ namespace EventFinderAPI.Controllers
             var userId = User.FindFirst("id")?.Value;
 
             Console.WriteLine(userId);
+            //todo add pagination
             var user = await _context.Users.Include(u => u.ReviewsAdded).FirstOrDefaultAsync(x => x.Id.Equals(userId));
+
+       
 
             if (user == null) { return NotFound(); }
 
@@ -39,6 +43,7 @@ namespace EventFinderAPI.Controllers
         [HttpPut("profile")]
         public async Task<IActionResult> UpdateProfile( [FromBody] ProfileDTO model)
         {
+            Console.WriteLine(model.Username);
             var userId = User.FindFirst("id")?.Value;
             var user = await _context.Users.Include(u => u.ReviewsAdded).FirstOrDefaultAsync(x => x.Id.Equals(userId));
             if (user == null) { return NotFound(); }
@@ -65,9 +70,9 @@ namespace EventFinderAPI.Controllers
         private async Task<bool> UpdateUserProfile(AppUser user, ProfileDTO newProfile)
         {
             //pfpUrl can be null cuz dah
-            if (newProfile.PfpUrl != user.pfpUrl)
+            if (newProfile.PfpUrl != user.PfpUrl)
             {
-                user.pfpUrl = newProfile.PfpUrl;
+                user.PfpUrl = newProfile.PfpUrl;
             }
 
             
@@ -77,7 +82,7 @@ namespace EventFinderAPI.Controllers
                 if (newProfile.Username.ToUpper() != user.UserName.ToUpper())
                 {
                     //return immediately if username taken
-                    if ((await ValidateUsernameIsNotTaken(newProfile.Username))) { return false; }
+                    if (!(await ValidateUsernameIsFree(newProfile.Username))) { return false; }
 
                     //updates username and normalized name
                     user.UserName = newProfile.Username;
@@ -98,12 +103,17 @@ namespace EventFinderAPI.Controllers
 
         //checks username.toUpper() is not already someone's normalized username
         //returns true if username avaliable
-        private async Task<bool> ValidateUsernameIsNotTaken(string? username)
+        private async Task<bool> ValidateUsernameIsFree(string? username)
         {
-            if(username == null) { return true; }
+            Console.WriteLine($"checking if {username} is taken");
+            if (username == null) { return true; }
 
-            var userWithUsername = await _context.Users.FirstOrDefaultAsync(u => u.NormalizedUserName != username.ToUpper());
 
+
+            var userWithUsername = await _context.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == username.ToUpper());
+
+
+            Console.WriteLine($"userWithUsername is  {userWithUsername}");
             return userWithUsername == null;
         }
 

@@ -1,4 +1,4 @@
-﻿using EventFinderAPI.Models;
+﻿using reviews4everything.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -9,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace EventFinderAPI.Controllers
+namespace reviews4everything.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -3,7 +3,7 @@ using Amazon.S3;
 using Amazon;
 using Amazon.Runtime;
 
-namespace EventFinderAPI.Services
+namespace reviews4everything.Services
 {
     public class S3UploadService
     {

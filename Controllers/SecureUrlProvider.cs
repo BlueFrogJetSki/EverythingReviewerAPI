@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using EventFinderAPI.Services;
+using reviews4everything.Services;
 using Microsoft.AspNetCore.Authorization;
 
-namespace EventFinderAPI.Controllers
+namespace reviews4everything.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     [Route("api/[controller]")]
     public class SecureUrlProvider : Controller

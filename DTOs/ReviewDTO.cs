@@ -1,6 +1,6 @@
-﻿using EventFinderAPI.Models;
+﻿using reviews4everything.Models;
 
-namespace EventFinderAPI.DTOs
+namespace reviews4everything.DTOs
 {
     public class ReviewDTO
     {
@@ -10,7 +10,7 @@ namespace EventFinderAPI.DTOs
             Rating = review.Rating;
             Username = review.CreatedBy.UserName;
             CreatedAt = review.createdAt;
-            PfpUrl = review.CreatedBy.pfpUrl;
+            PfpUrl = review.CreatedBy.PfpUrl;
         }
         public string Text { get; set; }
         public int Rating { get; set; }

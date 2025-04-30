@@ -2,11 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-namespace EventFinderAPI.Models
+namespace reviews4everything.Models
 {
     public class AppUser:IdentityUser
     {
-        public string? pfpUrl = null;
+
+        public string? PfpUrl { get; set; }
         public ICollection<Item>ItemsAdded { get; }
 
         public ICollection<Review> ReviewsAdded { get; }

@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using EventFinderAPI.Data;
-using EventFinderAPI.Models;
+using reviews4everything.Models;
 using System.Text;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using EventFinderAPI.DTOs;
+using reviews4everything.DTOs;
+using reviews4everything.Data;
 
-namespace EventFinderAPI.Controllers
+
+namespace reviews4everything.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -175,6 +176,7 @@ namespace EventFinderAPI.Controllers
         private bool ReviewBelongToUser(Review review)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if(userId == null) {return false;}
             return (userId.Equals(review.Uid));
         }
 

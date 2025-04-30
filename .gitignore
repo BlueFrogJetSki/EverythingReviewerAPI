@@ -49,3 +49,7 @@ node_modules/
 
 ##appsetting
 appsettings.json
+
+#docker compose
+compose.yaml
+.dockerignore

@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace EventFinderAPI.Migrations
+namespace reviews4everything.Migrations
 {
     /// <inheritdoc />
     public partial class initial : Migration

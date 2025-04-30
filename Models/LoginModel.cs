@@ -1,4 +1,4 @@
-﻿namespace EventFinderAPI.Models
+﻿namespace reviews4everything.Models
 {
     public class LoginModel
     {

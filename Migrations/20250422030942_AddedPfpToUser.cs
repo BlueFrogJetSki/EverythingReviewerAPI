@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace EventFinderAPI.Migrations
+namespace reviews4everything.Migrations
 {
     /// <inheritdoc />
     public partial class AddedPfpToUser : Migration

@@ -1,13 +1,14 @@
 using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
-using EventFinderAPI.Data;
-using EventFinderAPI.Models;
-using EventFinderAPI.Services;
+using reviews4everything.Models;
+using reviews4everything.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using reviews4everything.Data;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,13 +62,9 @@ builder.Services.AddSingleton<IAmazonS3>(sp =>
 {
     var accessKey = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
     var secretKey = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
-
-    if (string.IsNullOrEmpty(accessKey) || string.IsNullOrEmpty(secretKey))
-    {
-        Console.WriteLine(accessKey);
-        Console.WriteLine(secretKey);
-        throw new InvalidOperationException("AWS credentials are not set in environment variables.");
-    }
+    Trace.Listeners.Add(new ConsoleTraceListener());
+    Trace.Assert(!(string.IsNullOrEmpty(accessKey) || string.IsNullOrEmpty(secretKey)), "AWS credentials are not set in environment variables.");
+    
 
     var credentials = new BasicAWSCredentials(accessKey, secretKey);
     var config = new AmazonS3Config
@@ -104,7 +101,7 @@ builder.Services.AddAuthorization(options =>
 
 
 var app = builder.Build();
-app.UseCors("AllowFrontend");
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
