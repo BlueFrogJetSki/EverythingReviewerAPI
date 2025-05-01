@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Cors;
 
 namespace reviews4everything.Controllers
 {
-   
+
     [Route("api/[controller]")]
     [ApiController]
     public class ReviewsController : ControllerBase
@@ -27,7 +27,7 @@ namespace reviews4everything.Controllers
         // GET: api/Reviews/5
         //get reviews for an item with itemName
         [HttpGet("{itemName}")]
-        public async Task<ActionResult<List<ReviewDTO>>> GetReview(string itemName)
+        public async Task<ActionResult<ICollection<ReviewDTO>>> GetReview(string itemName)
         {
             var normalisedItemName = itemName.ToUpperInvariant();
 
@@ -48,6 +48,16 @@ namespace reviews4everything.Controllers
             var reviewDTOs = reviews.Select(r => new ReviewDTO(r)).ToList();
 
             return reviewDTOs;
+        }
+
+        // GET: recent
+        [HttpGet("Recent")]
+        public async Task<ActionResult<ICollection<ReviewDTO>>> GetRecentReviews([FromQuery] int num)
+        {
+    
+            var reviews = await _context.Reviews.Include(r=> r.CreatedBy).OrderByDescending(e => e.createdAt).Take(num).ToListAsync();
+
+            return reviews.Select(x => new ReviewDTO(x)).ToList();
         }
 
         // PUT: api/Reviews/5
@@ -178,7 +188,7 @@ namespace reviews4everything.Controllers
         private bool ReviewBelongToUser(Review review)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if(userId == null) {return false;}
+            if (userId == null) { return false; }
             return (userId.Equals(review.Uid));
         }
 
