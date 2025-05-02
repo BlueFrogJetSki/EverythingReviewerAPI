@@ -38,7 +38,7 @@ namespace reviews4everything.Controllers
 
             if (item == null) { return NotFound(); }
 
-            var reviews = await _context.Reviews.Include(r => r.CreatedBy).Where(r => (r.Wid == item.Wid)).Take(50).ToListAsync();
+            var reviews = await _context.Reviews.Include(r => r.CreatedBy).Include(r=>r.Item).Where(r => (r.Wid == item.Wid)).Take(50).ToListAsync();
 
             if (reviews == null)
             {
@@ -55,7 +55,7 @@ namespace reviews4everything.Controllers
         public async Task<ActionResult<ICollection<ReviewDTO>>> GetRecentReviews([FromQuery] int num)
         {
     
-            var reviews = await _context.Reviews.Include(r=> r.CreatedBy).OrderByDescending(e => e.createdAt).Take(num).ToListAsync();
+            var reviews = await _context.Reviews.Include(r=> r.CreatedBy).Include(r => r.Item).OrderByDescending(e => e.createdAt).Take(num).ToListAsync();
 
             return reviews.Select(x => new ReviewDTO(x)).ToList();
         }
