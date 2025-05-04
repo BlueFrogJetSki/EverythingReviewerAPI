@@ -19,11 +19,13 @@ namespace reviews4everything.Controllers
     {
         private readonly AppDbContext _context;
         private IMemoryCache _cache;
+        private readonly ILogger<ReviewsController> _logger;
 
-        public ReviewsController(AppDbContext context, IMemoryCache cache)
+        public ReviewsController(AppDbContext context, IMemoryCache cache, ILogger<ReviewsController> logger)
         {
             _context = context;
             _cache = cache;
+            _logger = logger;
         }
 
 
@@ -41,7 +43,7 @@ namespace reviews4everything.Controllers
 
             if (item == null) { return NotFound(); }
 
-            var reviews = await _context.Reviews.Include(r => r.CreatedBy).Include(r=>r.Item).Where(r => (r.Wid == item.Wid)).Take(50).ToListAsync();
+            var reviews = await _context.Reviews.Include(r => r.CreatedBy).Include(r => r.Item).Where(r => (r.Wid == item.Wid)).Take(50).ToListAsync();
 
             if (reviews == null)
             {
@@ -57,8 +59,8 @@ namespace reviews4everything.Controllers
         [HttpGet("Recent")]
         public async Task<ActionResult<ICollection<ReviewDTO>>> GetRecentReviews([FromQuery] int num)
         {
-    
-            var reviews = await _context.Reviews.Include(r=> r.CreatedBy).Include(r => r.Item).OrderByDescending(e => e.createdAt).Take(num).ToListAsync();
+
+            var reviews = await _context.Reviews.Include(r => r.CreatedBy).Include(r => r.Item).OrderByDescending(e => e.createdAt).Take(num).ToListAsync();
 
             return reviews.Select(x => new ReviewDTO(x)).ToList();
         }
@@ -67,15 +69,35 @@ namespace reviews4everything.Controllers
         [HttpGet()]
         public async Task<ActionResult<ICollection<ReviewDTO>>> GetPaginatedReviews([FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
+            string cacheKey = $"reviews page {page}";
+            var startTime = DateTime.Now;
+
+            // Try to get from cache
+            if (_cache.TryGetValue(cacheKey, out ICollection<ReviewDTO>? cachedReviews))
+            {
+                var cacheStopTime = DateTime.Now;
+                _logger.LogInformation("Took {time} to query page {page} at limit {} from cache", (cacheStopTime - startTime).TotalMilliseconds, page, limit);
+                return Ok(cachedReviews); // return cached
+            }
+
+            //cache miss
             var reviews = await _context.Reviews
                 .Include(r => r.CreatedBy)
                 .Include(r => r.Item)
                 .OrderByDescending(e => e.createdAt)
                 .Skip((page - 1) * limit)
-                .Take(limit)
+                .Take(limit).Select(x => new ReviewDTO(x))
                 .ToListAsync();
+            var stopTime = DateTime.Now;
 
-            return reviews.Select(x => new ReviewDTO(x)).ToList();
+            // Set cache with expiration
+            var cacheOptions = new MemoryCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromSeconds(45)).SetAbsoluteExpiration(TimeSpan.FromSeconds(3600));
+
+            _cache.Set(cacheKey, reviews, cacheOptions);
+
+            _logger.LogInformation("Took {time} to query page {page} at limit {}", (stopTime - startTime).TotalMilliseconds, page, limit);
+            return reviews;
         }
 
         [HttpGet("count")]
