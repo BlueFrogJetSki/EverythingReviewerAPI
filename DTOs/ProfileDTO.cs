@@ -24,5 +24,14 @@ namespace reviews4everything.DTOs
             Console.WriteLine(user.ToString());
         }
 
+        public ProfileDTO(AppUser user, ICollection<ReviewDTO> reviews )
+        {
+            PfpUrl = user.PfpUrl;
+            Username = user.UserName;
+            Reviews = reviews;
+
+       
+        }
+
     }
 }

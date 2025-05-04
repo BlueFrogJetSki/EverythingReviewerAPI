@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using reviews4everything.DTOs;
 using reviews4everything.Data;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.Extensions.Caching.Memory;
 
 
 namespace reviews4everything.Controllers
@@ -17,10 +18,12 @@ namespace reviews4everything.Controllers
     public class ReviewsController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private IMemoryCache _cache;
 
-        public ReviewsController(AppDbContext context)
+        public ReviewsController(AppDbContext context, IMemoryCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
 

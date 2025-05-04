@@ -29,13 +29,14 @@ namespace reviews4everything.Controllers
 
             Console.WriteLine(userId);
             //todo add pagination
-            var user = await _context.Users.Include(u => u.ReviewsAdded).FirstOrDefaultAsync(x => x.Id.Equals(userId));
-
-       
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id.Equals(userId));
+            var user_reviwes = await _context.Reviews.Include(r=>r.Item).Where(r => r.Uid == userId).Select(r=>new ReviewDTO(r)).ToListAsync();
 
             if (user == null) { return NotFound(); }
 
-            return Ok(new ProfileDTO(user));
+           
+
+            return Ok(new ProfileDTO(user, user_reviwes));
 
         }
 
