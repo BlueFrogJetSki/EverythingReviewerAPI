@@ -106,6 +106,8 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("ApiUser", policy => policy.RequireAuthenticatedUser());
 });
 
+builder.Services.AddMemoryCache();
+
 
 var app = builder.Build();
 
