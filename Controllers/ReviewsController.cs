@@ -60,6 +60,32 @@ namespace reviews4everything.Controllers
             return reviews.Select(x => new ReviewDTO(x)).ToList();
         }
 
+        // GET: api/reviews?page=page&limit=limit
+        [HttpGet()]
+        public async Task<ActionResult<ICollection<ReviewDTO>>> GetPaginatedReviews([FromQuery] int page = 1, [FromQuery] int limit = 10)
+        {
+            var reviews = await _context.Reviews
+                .Include(r => r.CreatedBy)
+                .Include(r => r.Item)
+                .OrderByDescending(e => e.createdAt)
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToListAsync();
+
+            return reviews.Select(x => new ReviewDTO(x)).ToList();
+        }
+
+        [HttpGet("count")]
+        public ActionResult<int> GetTotalCount()
+        {
+            var total_review_count = _context.Reviews.Count();
+
+            return total_review_count;
+        }
+
+
+
+
         // PUT: api/Reviews/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
